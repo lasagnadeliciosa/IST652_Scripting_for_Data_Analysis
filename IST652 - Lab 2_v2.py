@@ -37,7 +37,7 @@
 # 
 # ##### [1 point]
 
-# In[21]:
+# In[4]:
 
 
 # List #1
@@ -47,7 +47,7 @@ sortedlist1 = sorted(list1, key=lambda i: i[-1] )
 print(sortedlist1)
 
 
-# In[22]:
+# In[5]:
 
 
 # List #2
@@ -66,7 +66,7 @@ print(sortedlist2)
 # 
 # ##### [1 point]
 
-# In[85]:
+# In[7]:
 
 
 # Enter your code here, printing relevant answers to console:
@@ -94,29 +94,29 @@ grades = [['Harry', 89],
           ['Freddy', 100],]
 
 
-# In[98]:
+# In[8]:
 
 
 allgrades = [int(i[1]) for i in grades] #collect all the grades
 maxgrades = max(allgrades) #find what's the max
 print("Students with the highest grade(s):")
-for i, j in enumerate(grades): #loop through the grades and print the ones that matches "maxgrade"
-    if j[1] == maxgrades: #enumerate created a list of lists, so I will have to reference index 1 to show the names and grades.
-        print(j)
+for grade in grades: #loop through the grades and print the ones that matches "maxgrade"
+    if grade[1] == maxgrades:
+        print(grade)
 
 
-# In[100]:
+# In[9]:
 
 
 allgrades = [int(i[1]) for i in grades] #collect all the grades
 mingrades = min(allgrades) #find what's the min
 print("Students with the lowest grade(s):")
-for i, j in enumerate(grades): #loop through the grades and print the ones that matches "mingrade"
-    if j[1] == mingrades: #enumerate created a list of lists, so I will have to reference index 1 to show the names and grades.
-        print(j)
+for grade in grades: #loop through the grades and print the ones that matches "mingrade"
+    if grade[1] == mingrades: 
+        print(grade)
 
 
-# In[73]:
+# In[10]:
 
 
 print("Average grade: " + str(sum(allgrades)/len(allgrades)))
@@ -133,7 +133,7 @@ print("Average grade: " + str(sum(allgrades)/len(allgrades)))
 # 
 # ##### [1 point]
 
-# In[136]:
+# In[11]:
 
 
 # Enter your code here, printing relevant answers to console:
@@ -161,7 +161,7 @@ grades = [['Harry', 89],
           ['Freddy', 100],]
 
 sortedlist = sorted(grades, key=lambda i:i[-1])
-print("Student who has median grade:", sortedlist[int((len(sortedlist)/2)-0.5)])
+print("Student who has median grade:", sortedlist[int(len(sortedlist)/2)]) #int will always round the number closer to zero, in this case 10.5 will be rounded down to 10.
 #We have to take into account that indexes always starts at 0 and not 1.
 #Therefore the correct index number for the median is 10 instead of 11.
 
@@ -178,7 +178,7 @@ print("Student who has median grade:", sortedlist[int((len(sortedlist)/2)-0.5)])
 # 
 # ##### [1 point]
 
-# In[138]:
+# In[12]:
 
 
 # Enter your code here, printing relevant answers to console:
@@ -205,24 +205,14 @@ age_dict = {'Harry': 30,
           'Nikhil': 22,}
 
 
-# In[188]:
+# In[25]:
 
 
-#Option 1: convert the dictionary into a list of lists.
-sorteddict = sorted([list(k) for k in list(age_dict.items())], key=lambda i:i[-1])
-print(sorteddict)
-for i, j in enumerate(sorteddict):
-    print(str(sorteddict[i][1])+"-"+str(sorteddict[i][0]))
-
-
-# In[192]:
-
-
-#Option 2: or simply just sort the dictionary without converting it into lists.
-sorteddict = sorted(age_dict.items(), key=lambda i:i[-1])
-print(sorteddict)
-for i, j in enumerate(sorteddict):
-    print(str(sorteddict[i][1])+"-"+str(sorteddict[i][0]))
+#Convert the dictionary into a list of tuples.
+sorteddict = sorted([k for k in age_dict.items()], key=lambda i:i[-1]) #converts dictionary to list of lists.
+#print(sorteddict)
+for age in sorteddict:
+    print("'"+str(age[1])+"-"+str(age[0])+"'")
 
 
 # #### ( 5 ) Using either a loop or a list comprehension - write a program which generates the first 20 even squares.
@@ -237,13 +227,13 @@ for i, j in enumerate(sorteddict):
 # 
 # ##### [1 point]
 
-# In[4]:
+# In[14]:
 
 
 # Enter your code here, printing relevant answers to console:
 numOfSquares = 20
-for i in range(numOfSquares+1)[1:]:
-    print((i*2)**2)
+for i in range(numOfSquares):
+    print(((i+1)*2)**2)
 
 
 # #### ( 6 ) Print the following summary statistics from the dictionary of animals in a zoe.
@@ -258,7 +248,7 @@ for i in range(numOfSquares+1)[1:]:
 # 
 # ##### [1 point]
 
-# In[204]:
+# In[15]:
 
 
 zoo_animals = {'giraffe':3,
@@ -276,57 +266,42 @@ zoo_animals = {'giraffe':3,
               'leopard':1}
 
 
-# In[ ]:
+# In[16]:
 
 
-a = []
-for i in zoo_animals.keys(): #we want the keyes
-    a.append(i)
-print("number of distinct species:",len(a))
+print("number of distinct species:", len(zoo_animals))
 
 
-# In[214]:
+# In[19]:
 
 
-b = []
-for i in zoo_animals.values(): #we want the values
-    b.append(i)
-print("total number of animals:",sum(b))
+totalAnimals = sum(list(zoo_animals.values())) #O(n)
+print("Total number of animals:", totalAnimals)
 
 
-# In[215]:
+# In[20]:
 
 
-c = sum(b)/len(a)
-print("average number of animals per species: " + str(c))
+averagePerSpecies = totalAnimals/len(zoo_animals)
+print("Average number of animals per species: " + str(averagePerSpecies))
 
 
-# In[251]:
+# In[22]:
 
 
-zoo_list = [list(i) for i in list(zoo_animals.items())] #convert dictionary into a list of touples
-zoo_list2 = [list(i) for i in list(zoo_list)] #convert list of touples into a list of lists
-allanimals = [int(i[1]) for i in zoo_list2] #collect all the animal numbers
-#print(allanimals)
-maxanimal = max(allanimals)
-#print(maxanimal)
+maxanimal = max(list(zoo_animals.values()))
 print("Specie(s) with the most members:")
-for i, j in enumerate(zoo_list):
-    if j[1] == maxanimal:
-        print(j[0])
+for animal in zoo_animals.items():
+    if animal[1] == maxanimal:
+        print(animal[0])
 
 
-# In[252]:
+# In[23]:
 
 
-zoo_list = [list(i) for i in list(zoo_animals.items())] #convert dictionary into a list of touples
-zoo_list2 = [list(i) for i in list(zoo_list)] #convert list of touples into a list of lists
-allanimals = [int(i[1]) for i in zoo_list2] #collect all the animal numbers
-#print(allanimals)
-minanimal = min(allanimals)
-#print(maxanimal)
+minanimal = min(list(zoo_animals.values()))
 print("Specie(s) with the least members:")
-for i, j in enumerate(zoo_list):
-    if j[1] == minanimal:
-        print(j[0])
+for animal in zoo_animals.items():
+    if animal[1] == minanimal:
+        print(animal[0])
 
