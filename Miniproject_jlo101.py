@@ -138,7 +138,7 @@ newPokeDF.to_csv('legend-nonlegend_capture_mean.csv')
 #combined stat (attack+defense+hp+speed) by types
 
 
-# In[245]:
+# In[261]:
 
 
 #Question 2: Combined stat (attach+defense+hp+speed) analysis by types.
@@ -178,7 +178,7 @@ newPokeDF = pd.DataFrame(data, columns=['Type',
 print(newPokeDF)
 
 
-# In[247]:
+# In[262]:
 
 
 #export result as csv
