@@ -32,7 +32,7 @@
 
 # ### For Questions 1 - 4, consider the following two dictionaries:
 
-# In[13]:
+# In[9]:
 
 
 stock = {
@@ -61,18 +61,24 @@ prices = {
 # 
 # ##### [1 point]
 
-# In[14]:
+# In[10]:
 
 
 # Enter your code here, printing relevant answers to console:
 #1a
-print(stock["orange"])
+stock["orange"]
 
 #1b
 stock["cherry"] = 3
-print("stock:", stock)
+stock
+
+
+# In[9]:
+
+
+#1b
 prices["cherry"] = 5
-print("prices:", prices)
+prices
 
 
 # ---
@@ -81,12 +87,16 @@ print("prices:", prices)
 # 
 # ##### [1 point]
 
-# In[16]:
+# In[14]:
 
 
 # Enter your code here, printing relevant answers to console:
 for i in stock:
     print(i, stock[i]) #prints the fruit and number of stocks
+
+
+
+
 
 
 #  ----
@@ -99,16 +109,17 @@ for i in stock:
 # 
 # ##### [1 point]
 
-# In[17]:
+# In[14]:
 
 
 # Enter your code here, printing relevant answers to console:
 groceries = ['apple', 'banana', 'pear']
-totalNumber = 0
-for grocery in groceries:
-    totalNumber += stock[grocery] #lookup grocery in stock dictionary and add the number of fruits in each iteration.
+newlist = []
+for i in stock:
+    if i in groceries:
+        newlist.append(stock.get(i))
 
-print('Total number of fruits:', totalNumber)
+print('Total number of fruits: ', sum(newlist))
 
 
 # #### ( 4 ) Write the code that can print out the total value of in-stock items. 
@@ -118,17 +129,22 @@ print('Total number of fruits:', totalNumber)
 # 
 # ##### [1 point]
 
-# In[19]:
+# In[81]:
 
 
 # Enter your code here, printing relevant answers to console:
-totalValue = 0
-for fruit in stock:
-    if fruit in prices: #check if fruit is in prices dictionary.
-        totalValue += prices[fruit] * stock[fruit]
-    else:
-        print(fruit, "in stock, but not priced") #this will tell you what extra fruit you have that's not priced.
-print('Tatal Value:', totalValue)
+stocknumber = [] #add all the stock numbers
+for i in stock.values():
+    stocknumber.append(i)
+    
+pricenumber = [] #add all the price numbers
+for i in prices.values():
+    pricenumber.append(i)
+    
+c = [a*b for a,b in zip(stocknumber,pricenumber)] #perform element-wise multiplication with list comprehension and zip.
+
+print("Total price: ",sum(c)) #display the total price.
+
 
 
 # ---
@@ -142,7 +158,7 @@ print('Tatal Value:', totalValue)
 # 
 # #### [2 points]
 
-# In[1]:
+# In[7]:
 
 
 # Enter your code here, printing relevant answers to console:
