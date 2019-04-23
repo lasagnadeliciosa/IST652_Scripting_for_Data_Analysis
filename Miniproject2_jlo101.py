@@ -24,6 +24,13 @@ q1_words = 50
 q2_words = 30
 q3_words = None
 
+#login credential
+config = {
+    'CONSUMER_KEY': 'EFoNIPpaC8GeL3qBWGxtkmTxJ',
+    'CONSUMER_SECRET': 'O3xwQBGcP03afTJ4dKJkKmDhylJIMqXGsRQ2Y6fSQskqp3OmyB',
+    'OAUTH_SECRET': 'XTrufn3hzMduJAmO5Z4rbXTOC8azY7T9OPluFrOjJNo5h',
+    'OAUTH_TOKEN': '1112509961865699329-ByU2qCjiC85vHPOhwrrlfCXN5zTTGq'
+}
 
 
 # In[137]:
@@ -67,6 +74,8 @@ def generate_wc(cleaned_words, file_name):
     plt.margins(x = 1, y = 1)
     plt.show()
     cyber_wordcloud.to_file(file_name + '.png')
+    
+    
 
 
 # In[138]:
@@ -199,9 +208,11 @@ cyber_mar2019_nlp = nlp_analysis(cyber_mar2019_texts, q2_words)
 cyber_apr2019_nlp = nlp_analysis(cyber_apr2019_texts, q2_words)
 
 
-# In[163]:
+# In[197]:
 
 
+#The following for loops were designed to populate the list of dictionaries by words and the amount of times they
+#appeared in each month.
 cyber_4month_word_counts = {}
 
 for word, count in cyber_jan2019_nlp:
@@ -224,12 +235,14 @@ for word, count in cyber_apr2019_nlp:
         cyber_4month_word_counts[word][3] = count
     else:    
         cyber_4month_word_counts[word] = [0,0,0,count]
-        
+
+#convert the list of dictionary into a panda dataframe
 cyber_df2 = pd.DataFrame.from_dict(cyber_4month_word_counts, orient='index', columns=['Jan', 'Feb', 'Mar', 'Apr'])
 
-cyber_df2
+#export it as a csv file
+cyber_df2.to_csv('popular_words_by_months.csv')
 
-#export it later
+cyber_df2
 
 
 # In[164]:
@@ -280,26 +293,35 @@ cyber_nlp = nlp_analysis(cyber_words, None)
 mnb_nlp = nlp_analysis(mnb_words, None) 
 
 
-# In[195]:
+# In[198]:
 
 
+#create an empty dictionary to populate later
 cyber_mnb_inner_join = {}
 
+#convert the above list of tuple to dictionary
 cyber_nlp_map = dict(cyber_nlp)
 
+#create for loop that adds new words from mnb_nlp to the empty dictionary by comparing it with cyber_nlp_map keyes,
+#if the word matches with cyber_nlp_map, then only the count from mnb_nlp are stored in the dict.
 for word, count in mnb_nlp:
     if word in cyber_nlp_map:
         cyber_mnb_inner_join[word] = [cyber_nlp_map[word], count]
         
 cyber_mnb_inner_join
 
+#create a dataframe from dictionary with pre-named columns
 cyber_mnb_df = pd.DataFrame.from_dict(cyber_mnb_inner_join, orient='index', columns=['CyberPunk2077', 'Mount & Blade'])
 
+#create a new column by adding the first two columns together
 cyber_mnb_df['cyber+mnb'] = cyber_mnb_df['CyberPunk2077'] + cyber_mnb_df['Mount & Blade']
 
+#sort the column by highest value
 cyber_mnb_df_sorted = cyber_mnb_df.sort_values(by=['cyber+mnb'], ascending=False)
 
+#export the first 100 words as csv
 cyber_mnb_df_sorted[:100].to_csv('cyber+mnb_common_words')
+cyber_mnb_df_sorted[:100]
 
 
 # In[ ]:
