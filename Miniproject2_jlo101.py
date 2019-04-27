@@ -52,7 +52,7 @@ def text_clean(list_of_strings):
     #remove stopwords
     nltk_stopwords = nltk.corpus.stopwords.words('english')
     all_stopped_tokens = [tok for tok in all_tokens if not tok in nltk_stopwords]
-    token_list = [tok for tok in all_stopped_tokens if not alpha_filter(tok)]
+    token_list = [tok for tok in all_stopped_tokens if not alpha_filter(tok)] #we want the False matches
     return token_list
 
 #function that performs NLP analysis on a list of strings
@@ -85,10 +85,10 @@ def generate_wc(cleaned_words, file_name):
 client = pymongo.MongoClient()
 client.database_names()
 
-#create a new db called cyber_tweets
+#create a new db called cyber_db
 db = client.cyber_db
 
-#create a new collection(a group of documents) called deltatweets
+#create a new collection(a group of documents) called cyber_tweets
 cyber_timeline = db.cyber_tweets
 cyber_timeline.drop() # drop all existing data, just to refresh the table as new tweets comes in in the future
 
@@ -121,7 +121,7 @@ for i in range(1, pages_to_query+1):
     cyber_timeline.insert_many(tweet_json)
 
 
-# In[175]:
+# In[200]:
 
 
 #query data from cyber_db and convert it into a list of dictionaries
@@ -151,25 +151,25 @@ cyber_top100fav = cyber_df1_sorted.to_dict('records')[:100] #convert pd datafram
 
 #Takes the top 100 tweet's 'text' field and store into a list of strings.
 cyber_top100_texts = [tweet['text'] for tweet in cyber_top100fav if 'text' in tweet.keys()]
+#iterate through the list of dictionaries and find tweets(json) that has 'text', because some tweets only has pictures and no text.
 
-#Top 100 favorite tweet's top 30 words by frequency
-
+#call in the text_clean function to clean the text
 cyber_top100_words = text_clean(cyber_top100_texts)
 #cyber_top100_words
 
 generate_wc(cyber_top100_words, 'cyberWC_top100')
 
 
-# In[89]:
+# In[204]:
 
 
 #Question 2: Analyze tokens from Jan to April.
-#create for loop to categorize tweets by months.
 cyber_jan2019_tweets = []
 cyber_feb2019_tweets = []
 cyber_mar2019_tweets = []
 cyber_apr2019_tweets = []
 
+#create a for loop to categorize tweets by months by appending the json files into the variables as a list of dictionaries.
 for doc in cyber_docs:
     date = doc['created_at'].split()
     if date[1] == 'Jan' and date[-1] == '2019':
@@ -180,6 +180,8 @@ for doc in cyber_docs:
         cyber_mar2019_tweets.append(doc)
     if date[1] == 'Apr' and date[-1] == '2019':
         cyber_apr2019_tweets.append(doc)
+
+#cyber_jan2019_tweets[:1]
 
 
 # In[129]:
@@ -248,7 +250,7 @@ cyber_df2
 # In[164]:
 
 
-#Question 3
+#Question 3: Analyze CyberpunkGame and Mount_and_Blade twitter account. Compare number of words that appeared in both.
 #create a new collection for mnb_tweets
 mnb_timeline = db.mnb_tweets
 mnb_timeline.drop() # drop all existing data, just to refresh the table as new tweets comes in in the future
@@ -269,16 +271,16 @@ for i in range(1, pages_to_query+1):
     #use list comprehension to extract json field of the tweets
     tweet_json = [tweet._json for tweet in tweet_list]
 
-    #store json tweets into cyber_db's cyber_tweets collection
+    #store json tweets into cyber_db's mnb_tweets collection
     mnb_timeline.insert_many(tweet_json)
 
 
-# In[178]:
+# In[205]:
 
 
-#query data from cyber_db and convert it into a list of dictionaries
+#query mnb data from cyber_db and convert it into a list of dictionaries
 mnb_docs = list(mnb_timeline.find())
-#docs[123] #use this for testing
+#mnb_docs[123] #use this for testing
 
 #extract tweet text from dictionary from both database
 cyber_texts = [tweet['text'] for tweet in cyber_docs if 'text' in tweet.keys()]
@@ -299,11 +301,11 @@ mnb_nlp = nlp_analysis(mnb_words, None)
 #create an empty dictionary to populate later
 cyber_mnb_inner_join = {}
 
-#convert the above list of tuple to dictionary
+#convert cyber_nlp list of tuple into dictionary
 cyber_nlp_map = dict(cyber_nlp)
 
-#create for loop that adds new words from mnb_nlp to the empty dictionary by comparing it with cyber_nlp_map keyes,
-#if the word matches with cyber_nlp_map, then only the count from mnb_nlp are stored in the dict.
+#create for loop that adds new words from mnb_nlp to the empty dictionary by comparing it with cyber_nlp_map keys,
+#if the word matches with cyber_nlp_map, then only the count from mnb_nlp are stored in the dictionary.
 for word, count in mnb_nlp:
     if word in cyber_nlp_map:
         cyber_mnb_inner_join[word] = [cyber_nlp_map[word], count]
@@ -313,10 +315,10 @@ cyber_mnb_inner_join
 #create a dataframe from dictionary with pre-named columns
 cyber_mnb_df = pd.DataFrame.from_dict(cyber_mnb_inner_join, orient='index', columns=['CyberPunk2077', 'Mount & Blade'])
 
-#create a new column by adding the first two columns together
+#Create a new column within the dataframe by adding the first two column’s values together.
 cyber_mnb_df['cyber+mnb'] = cyber_mnb_df['CyberPunk2077'] + cyber_mnb_df['Mount & Blade']
 
-#sort the column by highest value
+#Sort the new column by highest value in descending order.
 cyber_mnb_df_sorted = cyber_mnb_df.sort_values(by=['cyber+mnb'], ascending=False)
 
 #export the first 100 words as csv
